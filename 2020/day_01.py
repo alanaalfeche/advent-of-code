@@ -1,9 +1,9 @@
 from data.input import load
 
+def parse(lines):
+    return list(map(int, lines))
 
-def multiply_two_sum(input_file, target):
-    lines = load(input_file)
-    nums = list(map(int, lines))
+def multiply_two_sum(target, nums):
     difference = {}
     for num in nums:
         if num in difference:
@@ -11,9 +11,7 @@ def multiply_two_sum(input_file, target):
         else:
             difference[target-num] = num
 
-def multiply_three_sum(input_file, target):
-    lines = load(input_file)
-    nums = list(map(int, lines))
+def multiply_three_sum(target, nums):
     nums.sort()
     for i in range(len(nums)):
         l, r = i + 1, len(nums)-1
@@ -28,6 +26,9 @@ def multiply_three_sum(input_file, target):
             elif _sum < target:
                 l += 1
 
-param={'input_file': '2020/data/day_01', 'target': 2020}
+lines = load('2020/data/day_01')
+content = parse(lines)
+
+param={'target': 2020, 'nums': content}
 multiply_two_sum(**param)
 multiply_three_sum(**param)
