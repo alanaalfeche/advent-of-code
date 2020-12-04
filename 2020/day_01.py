@@ -28,6 +28,6 @@ def multiply_three_sum(input_file, target):
             elif _sum < target:
                 l += 1
 
-param={'input_file': 'data/day_01', 'target': 2020}
+param={'input_file': '2020/data/day_01', 'target': 2020}
 multiply_two_sum(**param)
 multiply_three_sum(**param)
