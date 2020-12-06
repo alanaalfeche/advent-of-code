@@ -1,6 +1,6 @@
 from collections import namedtuple
 
-from data.input import load
+from data import load_day
 
 
 def parse(lines):
@@ -31,7 +31,7 @@ def password_position_policy_validator(content):
             continue
     print(count)
 
-lines = load('2020/data/day_02')
+lines = load_day(2)
 content = parse(lines)
 password_range_policy_validator(content)
 password_position_policy_validator(content)

@@ -1,4 +1,4 @@
-from data.input import load
+from data import load_day
 
 def parse(lines):
     return list(map(int, lines))
@@ -26,7 +26,7 @@ def multiply_three_sum(target, nums):
             elif _sum < target:
                 l += 1
 
-lines = load('2020/data/day_01')
+lines = load_day(1)
 content = parse(lines)
 
 param={'target': 2020, 'nums': content}
