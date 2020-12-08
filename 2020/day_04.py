@@ -49,21 +49,20 @@ def validate(passport):
             else: valid.append(False)
         elif key == 'hgt':
             num = int(re.findall('\d+', value)[0])
-            if 'cm' in value and (150 <= num <= 193): valid.append(True)
-            elif 'in' in value and (59 <= num <= 76): valid.append(True)
+            if value.endswith('cm') and (150 <= num <= 193): valid.append(True)
+            elif value.endswith('in') and (59 <= num <= 76): valid.append(True)
             else: valid.append(False)
         elif key == 'hcl':
-            if len(value) == 7 and re.search('^#[0-9a-f]', value): valid.append(True)
+            if bool(re.match('^#[0-9a-f]{6}$', value)): valid.append(True)
             else: valid.append(False)
         elif key == 'ecl':
             valid_eye_color= ['amb', 'blu', 'brn', 'gry', 'grn', 'hzl', 'oth']
             if value in valid_eye_color: valid.append(True)
             else: valid.append(False)
         elif key == 'pid':
-            if len(value) == 9 and re.search('^0', value): valid.append(True)
+            if bool(re.match('^[0-9]{9}$', value)): valid.append(True)
             else: valid.append(False)
         elif key == 'cid': valid.append(True)
-        
     return all(valid)
 
 passports = load_day(4)
