@@ -39,29 +39,24 @@ def validate(passport):
     for field in fields:
         key, value = field.split(':')
         if key == 'byr':
-            if 1920 <= int(value) <= 2002: valid.append(True)
-            else: valid.append(False)
+            valid.append(bool(1920 <= int(value) <= 2002))
         elif key == 'iyr':
-            if 2010 <= int(value) <= 2020: valid.append(True)
-            else: valid.append(False)
+            valid.append(bool(2010 <= int(value) <= 2020))
         elif key == 'eyr':
-            if 2020 <= int(value) <= 2030: valid.append(True)
-            else: valid.append(False)
+            valid.append(bool(2020 <= int(value) <= 2030))
         elif key == 'hgt':
             num = int(re.findall('\d+', value)[0])
             if value.endswith('cm') and (150 <= num <= 193): valid.append(True)
             elif value.endswith('in') and (59 <= num <= 76): valid.append(True)
             else: valid.append(False)
         elif key == 'hcl':
-            if bool(re.match('^#[0-9a-f]{6}$', value)): valid.append(True)
-            else: valid.append(False)
+            valid.append(bool(re.match('^#[0-9a-f]{6}$', value)))
         elif key == 'ecl':
-            valid_eye_color= ['amb', 'blu', 'brn', 'gry', 'grn', 'hzl', 'oth']
+            valid_eye_color = ['amb', 'blu', 'brn', 'gry', 'grn', 'hzl', 'oth']
             if value in valid_eye_color: valid.append(True)
             else: valid.append(False)
         elif key == 'pid':
-            if bool(re.match('^[0-9]{9}$', value)): valid.append(True)
-            else: valid.append(False)
+            valid.append(bool(re.match('^[0-9]{9}$', value)))
         elif key == 'cid': valid.append(True)
     return all(valid)
 
