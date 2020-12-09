@@ -4,62 +4,39 @@ import re
 from data import load_day
 
 
-def count_passports_with_all_required_fields(fields, passports):
-    passports_with_all_required_fields = 0
-    valid_passports = 0
+def get_passports_with_all_required_fields(fields, passports):
+    passports_with_all_required_fields = []
     one_passport = []
     for line in passports:
         if not line:
             tmp = ' '.join(one_passport)
-            if all(field in tmp for field in fields):
-                passports_with_all_required_fields += 1
-                valid_passports += validate(tmp)
+            if all(field in tmp for field in fields.keys()):
+                passports_with_all_required_fields.append(tmp)
             one_passport = []
             continue
         one_passport.append(line)
 
-    print(f'Number of passport with all required fields: {passports_with_all_required_fields}')
-    print(f'Number of actual valid passports: {valid_passports}')
+    return passports_with_all_required_fields
 
-def validate(passport):
-    """Rules:
-    byr (Birth Year) - four digits; at least 1920 and at most 2002.
-    iyr (Issue Year) - four digits; at least 2010 and at most 2020.
-    eyr (Expiration Year) - four digits; at least 2020 and at most 2030.
-    hgt (Height) - a number followed by either cm or in:
-    If cm, the number must be at least 150 and at most 193.
-    If in, the number must be at least 59 and at most 76.
-    hcl (Hair Color) - a # followed by exactly six characters 0-9 or a-f.
-    ecl (Eye Color) - exactly one of: amb blu brn gry grn hzl oth.
-    pid (Passport ID) - a nine-digit number, including leading zeroes.
-    cid (Country ID) - ignored, missing or not.
-    """
-    valid = []
-    fields = passport.split(' ')
-    for field in fields:
-        key, value = field.split(':')
-        if key == 'byr':
-            valid.append(bool(1920 <= int(value) <= 2002))
-        elif key == 'iyr':
-            valid.append(bool(2010 <= int(value) <= 2020))
-        elif key == 'eyr':
-            valid.append(bool(2020 <= int(value) <= 2030))
-        elif key == 'hgt':
-            num = int(re.findall('\d+', value)[0])
-            if value.endswith('cm') and (150 <= num <= 193): valid.append(True)
-            elif value.endswith('in') and (59 <= num <= 76): valid.append(True)
-            else: valid.append(False)
-        elif key == 'hcl':
-            valid.append(bool(re.match('^#[0-9a-f]{6}$', value)))
-        elif key == 'ecl':
-            valid_eye_color = ['amb', 'blu', 'brn', 'gry', 'grn', 'hzl', 'oth']
-            if value in valid_eye_color: valid.append(True)
-            else: valid.append(False)
-        elif key == 'pid':
-            valid.append(bool(re.match('^[0-9]{9}$', value)))
-        elif key == 'cid': valid.append(True)
-    return all(valid)
-
+def count_valid_passports(fields, passports):
+    no_of_valid_passport = 0
+    for passport in passports:
+        fields = passport.split(' ')
+        parsed_fields = dict(field.split(':') for field in fields)
+        no_of_valid_passport += all(v(parsed_fields[k]) for k, v in required_passport_fields.items())
+    return no_of_valid_passport
+    
 passports = load_day(4)
-required_passport_fields = ['byr', 'iyr', 'eyr', 'hgt', 'hcl', 'ecl', 'pid']
-count_passports_with_all_required_fields(required_passport_fields, passports)
+required_passport_fields = {'byr': lambda x: 1920 <= int(x) <= 2002, 
+                            'iyr': lambda x: 2010 <= int(x) <= 2020, 
+                            'eyr': lambda x: 2020 <= int(x) <= 2030, 
+                            'hgt': lambda x: (x.endswith('cm') and 150 <= int(x[:-2]) <= 193) or 
+                                             (x.endswith('in') and 59 <= int(x[:-2]) <= 76), 
+                            'hcl': lambda x: re.match('^#[0-9a-f]{6}$', x), 
+                            'ecl': lambda x: x in ['amb', 'blu', 'brn', 'gry', 'grn', 'hzl', 'oth'], 
+                            'pid': lambda x: re.match('^[0-9]{9}$', x)
+                            }
+good_batch_of_passports = get_passports_with_all_required_fields(required_passport_fields, passports)
+valid_passports = count_valid_passports(required_passport_fields, good_batch_of_passports)
+print(f'Number of passport with all required fieds: {len(good_batch_of_passports)}')
+print(f'Number of valid passports: {valid_passports}')
