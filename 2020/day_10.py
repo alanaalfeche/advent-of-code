@@ -16,7 +16,18 @@ def multiply_jolt_differences(data):
 
 
 def get_total_paths(data):
-    pass
+    paths = defaultdict(int)
+    paths[0] = 1
+
+    for adapter in sorted(data):
+        for diff in range(1, 4):
+            next = adapter + diff
+            if next in data:
+                paths[next] += paths[adapter]
+    
+    x = max(paths, key=int)
+    return paths[x]
+
 
 data = load_day(10)
 data = [int(x) for x in data]
