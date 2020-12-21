@@ -1,19 +1,26 @@
+from collections import defaultdict
 from data import load_day
 
 
+def multiply_jolt_differences(data):
+    rating = defaultdict(int)
+
+    data.insert(0, 0)
+    data.sort()
+    for i in range(len(data)-1):
+        diff = data[i+1] - data[i]
+        if diff <= 3:
+            rating[diff] += 1
+
+    return rating[1] * (rating[3]+1) # built-in adapter is always 3 higher than the highest adapter
+
+
+def get_total_paths(data):
+    pass
+
 data = load_day(10)
-
-rating = {1: 0, 2: 0, 3: 0}
 data = [int(x) for x in data]
-data.sort()
-
-print(data)
-for i in range(len(data)-1):
-    diff = data[i+1] - data[i]
-    if diff <= 3:
-        rating[diff] += 1
-    print(i, rating)
-
-# data[0] to account for the first adaptor
-# +1 because my device built-in adapter is always 3 higher than the highest adapter
-print((rating[1]+data[0]) * (rating[3]+1))
+# part a
+print(multiply_jolt_differences(data))
+# part b
+print(get_total_paths(data))
