@@ -11,8 +11,8 @@ for line in data:
         or_mask = int(r.replace('X', '0'), base=2)
     else:
         value = int(r)
-        value &= and_mask
-        value |= or_mask
+        value &= and_mask # each bit of output is 1 if x AND y is 1, otherwise it's 0
+        value |= or_mask # each bit of output is 0 if x AND y is 0, otheriwse it's 1
         mem[int(l[4:-1])] = value
 
 print(sum(mem.values()))
